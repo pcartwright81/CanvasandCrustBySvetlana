@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canvas and Crust by Svetlana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --tan:#fdecd3;
+  --tan-dark:#f5d9b0;
+  --tan-deeper:#e8c48a;
+  --brown:#3b2a14;
+  --brown-mid:#7a4f1e;
+  --brown-light:#b07a3a;
+  --green-dark:#2d4a1e;
+  --green:#4a7a2e;
+  --cream:#fdf8f0;
+  --text:#2b1d0e;
+  --text-muted:#7a5c3a;
+  --radius:0.75rem;
+  --shadow:0 4px 24px rgba(60,30,0,0.10);
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Lato',sans-serif;
+  background:var(--cream);
+  color:var(--text);
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* NAV */
+nav{
+  background:var(--tan);
+  border-bottom:2px solid var(--tan-deeper);
+  padding:1rem 2rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem;
+  color:var(--brown);
+  font-weight:700;
+  letter-spacing:0.02em;
+}
+.nav-logo span{font-style:italic;font-weight:400;color:var(--brown-mid);}
+
+/* HERO */
+.hero{
+  position:relative;
+  background:var(--tan);
+  overflow:hidden;
+  padding:0;
+}
+.hero-banner{
+  width:100%;
+  display:block;
+  max-height:340px;
+  object-fit:cover;
+  object-position:center;
+}
+.hero-overlay{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,rgba(253,236,211,0.0) 55%,rgba(253,236,211,0.97) 85%);
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding:2rem 4rem;
+}
+.hero-text{text-align:right;}
+.hero-text h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.2rem);
+  color:var(--brown);
+  line-height:1.1;
+}
+.hero-text h1 em{
+  font-style:italic;
+  color:var(--brown-mid);
+  display:block;
+  font-size:0.7em;
+}
+.hero-text .tagline{
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(1.2rem,2vw,1.8rem);
+  color:var(--green-dark);
+  margin-top:0.4rem;
+}
+
+/* COMING SOON BANNER */
+.coming-soon-bar{
+  background:var(--brown);
+  color:var(--tan);
+  text-align:center;
+  padding:1rem 2rem;
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(1rem,2vw,1.3rem);
+  letter-spacing:0.08em;
+}
+.coming-soon-bar strong{
+  font-style:normal;
+  font-weight:700;
+  font-size:1.1em;
+  color:var(--tan-deeper);
+}
+
+/* MAIN CONTENT */
+main{
+  max-width:960px;
+  margin:0 auto;
+  padding:3rem 2rem 4rem;
+}
+
+/* ABOUT SECTION */
+.section-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.4rem,2.5vw,2rem);
+  color:var(--brown);
+  margin-bottom:0.5rem;
+  position:relative;
+  display:inline-block;
+}
+.section-title::after{
+  content:'';display:block;
+  height:2px;background:var(--tan-deeper);
+  margin-top:0.3rem;width:100%;
+}
+.wheat-divider{
+  text-align:center;
+  color:var(--brown-light);
+  font-size:1.4rem;
+  letter-spacing:0.3em;
+  margin:1.5rem 0;
+  opacity:0.7;
+}
+
+/* ABOUT CARD */
+.about-card{
+  background:var(--tan);
+  border-radius:var(--radius);
+  border:1px solid var(--tan-deeper);
+  padding:2rem 2.5rem;
+  margin-bottom:2rem;
+  box-shadow:var(--shadow);
+}
+.about-card p{
+  font-size:1.05rem;
+  line-height:1.8;
+  color:var(--text);
+  max-width:70ch;
+}
+
+/* INFO GRID */
+.info-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1.5rem;
+  margin-bottom:2.5rem;
+}
+.info-card{
+  background:var(--tan);
+  border:1px solid var(--tan-deeper);
+  border-radius:var(--radius);
+  padding:1.5rem 1.75rem;
+  box-shadow:var(--shadow);
+  display:flex;
+  gap:1rem;
+  align-items:flex-start;
+}
+.info-card .icon{
+  font-size:1.6rem;
+  margin-top:0.1rem;
+  flex-shrink:0;
+}
+.info-card h3{
+  font-family:'Playfair Display',serif;
+  font-size:0.85rem;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--text-muted);
+  margin-bottom:0.3rem;
+}
+.info-card p, .info-card a{
+  font-size:1rem;
+  color:var(--text);
+  font-weight:700;
+  text-decoration:none;
+  word-break:break-all;
+}
+.info-card a:hover{color:var(--green);}
+
+/* SPECIALTIES */
+.specialties{
+  background:var(--green-dark);
+  border-radius:var(--radius);
+  padding:2rem 2.5rem;
+  margin-bottom:2.5rem;
+  color:var(--cream);
+}
+.specialties .section-title{color:var(--tan);}
+.specialties .section-title::after{background:var(--tan-deeper);}
+.specialties-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+  margin-top:1rem;
+}
+.specialty-tag{
+  background:rgba(253,236,211,0.15);
+  border:1px solid rgba(253,236,211,0.35);
+  border-radius:9999px;
+  padding:0.5rem 1.2rem;
+  font-size:0.95rem;
+  color:var(--tan);
+  font-style:italic;
+  font-family:'Playfair Display',serif;
+}
+
+/* FOOTER */
+footer{
+  background:var(--brown);
+  color:var(--tan);
+  text-align:center;
+  padding:2rem;
+}
+footer .footer-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.3rem;
+  font-weight:700;
+  margin-bottom:0.4rem;
+}
+footer .footer-logo em{font-style:italic;font-weight:400;color:var(--tan-deeper);}
+footer p{font-size:0.9rem;color:var(--tan-deeper);margin-top:0.5rem;}
+footer a{color:var(--tan-deeper);text-decoration:none;}
+footer a:hover{color:var(--tan);}
+
+@media(max-width:600px){
+  .hero-overlay{
+    position:relative;inset:auto;
+    background:var(--tan);
+    padding:1.5rem;
+    justify-content:center;
+  }
+  .hero-text{text-align:center;}
+  main{padding:2rem 1rem;}
+  .about-card{padding:1.25rem;}
+  .specialties{padding:1.25rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Canvas &amp; Crust <span>by Svetlana</span></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <img class="hero-banner"
+       src="https://user-gen-media-assets.s3.amazonaws.com/gpt4o_images/5ff190cc-a891-410d-9cbb-dd9b5a7ff4d9.png"
+       alt="Artisan sourdough bread, decorated cookies, mason jar and wheat on linen"
+       width="1500" height="340" loading="eager">
+  <div class="hero-overlay">
+    <div class="hero-text">
+      <h1>Canvas and Crust <em>by Svetlana</em></h1>
+      <div class="tagline">Sourdough Bread &amp; Artisan Baked Goods</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMING SOON -->
+<div class="coming-soon-bar">
+  🌾 <strong>Website Coming Soon</strong> — Follow us on Instagram &amp; reach out to order today! 🌾
+</div>
+
+<main>
+
+  <!-- ABOUT -->
+  <div class="wheat-divider">⁂ ✦ ⁂</div>
+  <h2 class="section-title">About Us</h2>
+  <div class="about-card">
+    <p>At <strong>Canvas and Crust by Svetlana</strong>, every loaf is crafted with patience, passion, and the art of slow fermentation. Our naturally leavened sourdough breads and beautifully decorated artisan cookies are made with wholesome ingredients and an eye for detail — because good food should be as beautiful as it is delicious.</p>
+  </div>
+
+  <!-- INFO CARDS -->
+  <h2 class="section-title">Find Us</h2>
+  <div class="wheat-divider">⁂ ✦ ⁂</div>
+  <div class="info-grid">
+
+    <div class="info-card">
+      <div class="icon">📍</div>
+      <div>
+        <h3>Location</h3>
+        <p>116 Raspberry Way<br>Madison, AL 35757</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="icon">📞</div>
+      <div>
+        <h3>Phone</h3>
+        <a href="tel:8654382896">(865) 438-2896</a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="icon">🌐</div>
+      <div>
+        <h3>Website</h3>
+        <a href="https://canvasandcrustbySvetlana.com" target="_blank" rel="noopener noreferrer">canvasandcrustbySvetlana.com</a>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <div class="icon">📸</div>
+      <div>
+        <h3>Instagram</h3>
+        <a href="https://instagram.com/canvasandcrust_bySvetlana" target="_blank" rel="noopener noreferrer">@canvasandcrust_bySvetlana</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SPECIALTIES -->
+  <div class="specialties">
+    <h2 class="section-title">Our Specialties</h2>
+    <div class="specialties-grid">
+      <span class="specialty-tag">Slow Fermented Sourdough</span>
+      <span class="specialty-tag">Artisan Bread Loaves</span>
+      <span class="specialty-tag">Decorated Sugar Cookies</span>
+      <span class="specialty-tag">Floral Iced Cookies</span>
+      <span class="specialty-tag">Custom Orders Welcome</span>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-logo">Canvas &amp; Crust <em>by Svetlana</em></div>
+  <p>116 Raspberry Way, Madison, AL 35757 &nbsp;|&nbsp;
+     <a href="tel:8654382896">(865) 438-2896</a> &nbsp;|&nbsp;
+     <a href="https://instagram.com/canvasandcrust_bySvetlana" target="_blank" rel="noopener noreferrer">@canvasandcrust_bySvetlana</a>
+  </p>
+  <p style="margin-top:1rem;font-size:0.8rem;opacity:0.6;">© 2026 Canvas and Crust by Svetlana. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
