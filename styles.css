@@ -1,0 +1,456 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --tan: #fdecd3;
+  --tan-dark: #f5d9b0;
+  --tan-deeper: #e8c48a;
+  --brown: #3b2a14;
+  --brown-mid: #7a4f1e;
+  --brown-light: #b07a3a;
+  --green-dark: #2d4a1e;
+  --green: #4a7a2e;
+  --cream: #fdf8f0;
+  --text: #2b1d0e;
+  --text-muted: #7a5c3a;
+  --radius: 0.75rem;
+  --black: #000000;
+  --shadow: 0 4px 24px rgba(60, 30, 0, 0.10);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  background: var(--tan);
+  overflow: hidden;
+  padding: 0;
+}
+
+.hero-banner {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(253, 236, 211, 0.0) 55%, rgba(253, 236, 211, 0.97) 85%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 1rem clamp(1.5rem, 3.5vw, 4rem);
+}
+
+.hero-text {
+  text-align: right;
+}
+
+.hero-text h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  color: var(--brown);
+  line-height: 1.1;
+}
+
+.hero-text h1 em {
+  font-style: italic;
+  color: var(--brown-mid);
+  display: block;
+  font-size: 0.7em;
+}
+
+.hero-text .tagline {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.8rem);
+  color: var(--green-dark);
+  margin-top: 0.4rem;
+}
+
+/* COMING SOON BANNER */
+.coming-soon-bar {
+  background: var(--brown);
+  color: var(--tan);
+  text-align: center;
+  padding: 1rem 2rem;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  letter-spacing: 0.08em;
+}
+
+.coming-soon-bar strong {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 1.1em;
+  color: var(--tan-deeper);
+}
+
+/* MAIN CONTENT */
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+}
+
+/* ABOUT SECTION */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  color: var(--brown);
+  margin-bottom: 0.5rem;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  height: 2px;
+  background: var(--tan-deeper);
+  margin-top: 0.3rem;
+  width: 100%;
+}
+
+.wheat-divider {
+  text-align: center;
+  color: var(--brown-light);
+  font-size: 1.4rem;
+  letter-spacing: 0.3em;
+  margin: 1.5rem 0;
+  opacity: 0.7;
+}
+
+/* ABOUT CARD */
+.about-card {
+  background: var(--tan);
+  border-radius: var(--radius);
+  border: 1px solid var(--tan-deeper);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.about-card p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text);
+  max-width: 70ch;
+}
+
+/* INFO GRID */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.info-card {
+  background: var(--tan);
+  border: 1px solid var(--tan-deeper);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.info-card .icon {
+  font-size: 1.6rem;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-card .icon svg {
+  width: 1.6rem;
+  height: 1.6rem;
+  display: block;
+}
+
+.info-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+
+.info-card p,
+.info-card a {
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.info-card a:hover {
+  color: var(--green);
+}
+
+/* PAYMENTS */
+.payment-card {
+  background: var(--tan);
+  border: 1px solid var(--tan-deeper);
+  border-radius: var(--radius);
+  padding: 2.25rem;
+  margin-bottom: 2.5rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.payment-qr-col {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.payment-qr-frame {
+  background: var(--black);
+  padding: 0.85rem;
+  border-radius: 1rem;
+  border: 2px solid var(--tan-deeper);
+  box-shadow: 0 4px 16px rgba(59, 42, 20, 0.08);
+  display: inline-block;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.payment-qr-frame:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(59, 42, 20, 0.14);
+  background-color: var(--brown);
+}
+
+.payment-qr-img {
+  width: 180px;
+  height: 180px;
+  display: block;
+  border-radius: 0.35rem;
+}
+
+.qr-caption {
+  margin-top: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.payment-info-col {
+  flex: 1;
+}
+
+.cashapp-tag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: #00D632;
+  color: #062b08;
+  font-weight: 800;
+  font-size: 1.05rem;
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 2px 8px rgba(0, 214, 50, 0.25);
+  letter-spacing: 0.01em;
+}
+
+.cashapp-tag-badge svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: #062b08;
+}
+
+.payment-info-col h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.45rem;
+  color: var(--brown);
+  margin-bottom: 0.45rem;
+}
+
+.payment-info-col p {
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--text);
+  margin-bottom: 0.85rem;
+}
+
+.payment-note-box {
+  background: rgba(45, 74, 30, 0.08);
+  border-left: 3px solid var(--green);
+  padding: 0.75rem 1rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-size: 0.92rem;
+  color: var(--brown);
+  margin-bottom: 1.25rem;
+  line-height: 1.5;
+}
+
+.btn-cashapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--green-dark);
+  color: var(--cream);
+  padding: 0.75rem 1.6rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.98rem;
+  box-shadow: 0 4px 12px rgba(45, 74, 30, 0.22);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-cashapp:hover {
+  background: var(--green);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(45, 74, 30, 0.32);
+  color: #ffffff;
+}
+
+.btn-cashapp svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: currentColor;
+}
+
+/* SPECIALTIES */
+.specialties {
+  background: var(--green-dark);
+  border-radius: var(--radius);
+  padding: 2rem 2.5rem;
+  margin-bottom: 2.5rem;
+  color: var(--cream);
+}
+
+.specialties .section-title {
+  color: var(--tan);
+}
+
+.specialties .section-title::after {
+  background: var(--tan-deeper);
+}
+
+.specialties-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.specialty-tag {
+  background: rgba(253, 236, 211, 0.15);
+  border: 1px solid rgba(253, 236, 211, 0.35);
+  border-radius: 9999px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  color: var(--tan);
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+}
+
+/* FOOTER */
+footer {
+  background: var(--brown);
+  color: var(--tan);
+  text-align: center;
+  padding: 2rem;
+}
+
+footer .footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+}
+
+footer .footer-logo em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--tan-deeper);
+}
+
+footer p {
+  font-size: 0.9rem;
+  color: var(--tan-deeper);
+  margin-top: 0.5rem;
+}
+
+footer a {
+  color: var(--tan-deeper);
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: var(--tan);
+}
+
+@media(max-width:960px) {
+  .hero-overlay {
+    position: relative;
+    inset: auto;
+    background: var(--tan);
+    padding: 1.5rem;
+    justify-content: center;
+  }
+
+  .hero-text {
+    text-align: center;
+  }
+}
+
+@media(max-width:600px) {
+  main {
+    padding: 2rem 1rem;
+  }
+
+  .about-card {
+    padding: 1.25rem;
+  }
+
+  .payment-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.75rem 1.25rem;
+    gap: 1.5rem;
+  }
+
+  .payment-note-box {
+    text-align: left;
+  }
+
+  .btn-cashapp {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .specialties {
+    padding: 1.25rem;
+  }
+}
