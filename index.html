@@ -146,49 +146,9 @@
 
     <!-- PRODUCTS -->
     <div class="specialties">
-      <h2 class="section-title">Our Products</h2>
-
-      <h3 class="product-category-title">Bagels</h3>
-      <div class="specialties-grid">
-        <span class="specialty-tag">Cranberry Orange</span>
-        <span class="specialty-tag">Everything</span>
-        <span class="specialty-tag">Jalapeño &amp; Cheese</span>
-        <span class="specialty-tag">Plain</span>
-      </div>
-
-      <h3 class="product-category-title">Bread</h3>
-      <div class="specialties-grid">
-        <span class="specialty-tag">Apple Cinnamon</span>
-        <span class="specialty-tag">Basil, Sun Dry Tomatoes &amp; Garlic</span>
-        <span class="specialty-tag">Chocolate Cherry</span>
-        <span class="specialty-tag">Cranberry Orange</span>
-        <span class="specialty-tag">Everything</span>
-        <span class="specialty-tag">Everything Jalapeño</span>
-        <span class="specialty-tag">Jalapeño &amp; Cheese</span>
-        <span class="specialty-tag">Lemon Blueberry</span>
-        <span class="specialty-tag">Mixed Seeds</span>
-        <span class="specialty-tag">Plain</span>
-        <span class="specialty-tag">Pumpernickel</span>
-        <span class="specialty-tag">Rolls</span>
-        <span class="specialty-tag">Rosemary Garlic</span>
-        <span class="specialty-tag">Whole Wheat</span>
-      </div>
-
-      <h3 class="product-category-title">Muffins</h3>
-      <div class="specialties-grid">
-        <span class="specialty-tag">Banana Nut</span>
-        <span class="specialty-tag">Chocolate &amp; Banana Nut</span>
-        <span class="specialty-tag">Chocolate Chip</span>
-        <span class="specialty-tag">Double Chocolate</span>
-        <span class="specialty-tag">Peanut Butter Chocolate</span>
-      </div>
-
-      <h3 class="product-category-title">Other</h3>
-      <div class="specialties-grid">
-        <span class="specialty-tag">Baklava</span>
-        <span class="specialty-tag">Cinnamon Rolls</span>
-        <span class="specialty-tag">Pancake Mix</span>
-      </div>
+      <h2 class="section-title">Our Products &mdash; $15</h2>
+      <p class="products-hint">Click any item to view its ingredients and allergens.</p>
+      <div id="products-container"></div>
     </div>
   </main>
 
@@ -206,6 +166,385 @@
     </p>
   </footer>
 
+  <!-- PRODUCT DETAILS MODAL -->
+  <div id="product-modal-backdrop" class="product-modal-backdrop" role="dialog" aria-modal="true"
+    aria-labelledby="product-modal-title" aria-hidden="true">
+    <div class="product-modal">
+      <div class="product-modal-header">
+        <h3 id="product-modal-title" class="product-modal-title"></h3>
+        <button type="button" id="product-modal-close" class="product-modal-close" aria-label="Close product details">
+          &times;
+        </button>
+      </div>
+      <div class="product-modal-section">
+        <div class="product-modal-label">Ingredients</div>
+        <p id="product-modal-ingredients" class="product-modal-text"></p>
+      </div>
+      <div class="product-modal-section product-modal-contains">
+        <div class="product-modal-label">Contains</div>
+        <p id="product-modal-contains" class="product-modal-text"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const DEFAULT_CATALOG_FILES = [
+        'Product_Catalog_20261031_215011.csv',
+        'Product_Catalog.csv'
+      ];
+
+      // Fallback CSV used when index.html is opened directly from a folder (file:// protocol),
+      // where browsers block fetch() requests to local .csv files due to CORS security rules.
+      const FALLBACK_CSV = `ID,Name,Category,RetailPrice,WholesalePrice,ProfitMargin,MarginPercent,NetWeight,Allergens,Ingredients,Status,HasLabel,LabelFileName,LabelNotes,CreatedAt
+1,"Apple Cinnamon Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, apple, cinnamon.",Active,Yes,"Apple_Cinnamon_Bread_Label.pdf","",2026-10-08
+2,"Baklava","Pastry",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Tree Nuts (Pistachios, Walnuts).","Phyllo dough (wheat flour, cornstarch, canola oil, water), sugar, water, pistachios, walnuts, butter (cream/milk), lemon.",Active,Yes,"Baklava_Label.pdf","",2026-10-08
+3,"Banana Nut Muffins","Muffin",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Tree Nuts","Enriched bleached wheat flour (wheat flour, barley flour), whole wheat flour, sourdough starter (water, flour), brown sugar, butter (milk), milk, ripe bananas, walnuts, vanilla extract, baking powder, baking soda, salt, cinnamon.",Active,Yes,"Banana_Nut_Muffins_Label.pdf","",2026-10-08
+4,"Basil, Sun Dry Tomatoes, & Garlic Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, basil, sun-dried tomatoes, garlic.",Active,Yes,"Basil,_Sun_Dry_Tomatoes,_&_Garlic_Bread_Label.pdf","",2026-10-08
+5,"Bread Rolls","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk","",Inactive,No,"","",2026-10-08
+18,"Buttermilk Pancake Mix","Mix",10.00,7.00,3.00,30.0,"11 oz (335 g)","Milk, Wheat.","Enriched bleached wheat flour (wheat flour), buttermilk powder, sugar, dehydrated sourdough starter, baking powder, salt.",Active,Yes,"Buttermilk_Pancake_Mix_Label.pdf","",2026-10-08
+6,"Chocolate & Banana Nut Muffins","Muffin",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Eggs, Nuts, Soy.","Enriched bleached wheat flour (wheat flour, barley flour), whole wheat flour, sourdough starter (water, flour), brown sugar, butter (milk), milk, ripe bananas, walnuts, chocolate chip, vanilla extract, baking powder, baking soda, salt, cinnamon.",Active,Yes,"Chocolate_&_Banana_Nut_Muffins_Label.pdf","",2026-10-08
+7,"Chocolate Cherry Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Soy.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, cocoa powder, dried cherries, chocolate chips.",Active,Yes,"Chocolate_Cherry_Bread_Label.pdf","",2026-10-08
+8,"Chocolate Chip Muffins","Muffin",15.00,10.00,5.00,33.3,"25 oz (708 g)","Wheat, Milk, Eggs, Nuts, Soy.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, eggs, peanut butter (peanuts, sugar, palm oil, salt), butter (milk), brown sugar, chocolate chips (sugar, chocolate liquor, cocoa butter, milkfat, soy lecithin), cocoa powder, peanut oil, cornstarch, baking powder, baking soda, salt, vanilla extract.",Active,Yes,"Chocolate_Chip_Muffins_Label.pdf","",2026-10-08
+9,"Cinnamon Rolls","Pastry",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Egg.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, milk, cinnamon, eggs, brown sugar, vanilla extract.",Active,Yes,"Cinnamon_Rolls_Label.pdf","",2026-10-08
+27,"Cranberry Orange Bagel","Bagel",15.00,10.00,5.00,33.3,"28 oz (800 g)","Wheat.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, salt, filtered water, cranberry, orange zest, raisin, orange juice.",Active,Yes,"Cranberry_Orange_Bagel_Label.pdf","",2026-10-11
+10,"Cranberry Orange Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, salt, filtered water, cranberry, orange zest, raisin, orange juice.",Active,Yes,"Cranberry_Orange_Bread_Label.pdf","",2026-10-08
+28,"Double Chocolate Muffins","Muffin",15.00,10.00,5.00,33.3,"25 oz (708 g)","Wheat, Milk, Soy.","Enriched bleached wheat flour (wheat flour, barley flour), sugar, sourdough starter (water, flour), eggs, milk, butter (milk), canola oil, chocolate chips (sugar, chocolate liquor, cocoa butter, milkfat, soy lecithin), cocoa powder, cornstarch, baking powder, baking soda, salt, vanilla extract.",Active,Yes,"Double_Chocolate_Muffins_Label.pdf","",2026-10-11
+11,"Everything Bagel","Bagel",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Sesame, Soy (from sesame)","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, everything seasoning (sesames, poppy seeds, dried garlic, dried onion, sea salt, black sesame seeds).",Active,Yes,"Everything_Bagel_Label.pdf","",2026-10-08
+12,"Everything Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Sesame Seeds.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, everything bagel seasoning (sesame seeds, poppy seeds, dried garlic, dried onion, salt).",Active,Yes,"Everything_Bread_Label.pdf","",2026-10-08
+13,"Everything Jalapeno Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Sesame Seeds.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, everything bagel seasoning (sesame seeds, poppy seeds, dried garlic, dried onion, salt), jalapeño.",Active,Yes,"Everything_Jalapeno_Bread_Label.pdf","",2026-10-08
+14,"Jalapeno & Cheese Bagel","Bagel",15.00,10.00,5.00,33.3,"28 oz (800 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, cheddar cheese, jalapeno.",Active,Yes,"Jalapeno_&_Cheese_Bagel_Label.pdf","",2026-10-08
+15,"Jalapeno & Cheese Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, jalapeños, cheddar cheese (milk, salt).",Active,Yes,"Jalapeno_&_Cheese_Bread_Label.pdf","",2026-10-08
+30,"Jalapeno Cheese English Muffin","Muffin",15.00,10.00,5.00,33.3,"18 OZ (535g)","Eggs, Honey, Milk, Wheat.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, milk, egg, honey, salt, jalapeños, cheddar cheese (milk, salt).",Active,Yes,"Jalapeno_Cheese_English_Muffin_Label.pdf","",2026-10-16
+31,"Lemon Blueberry Bagel","Bagel",15.00,10.00,5.00,33.3,"28 oz (800 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, blueberry, lemon.",Active,Yes,"Lemon_Blueberry_Bagel_Label.pdf","",2026-10-23
+16,"Lemon Blueberry Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, lemon zest, fresh blueberries.",Active,Yes,"Lemon_Blueberry_Bread_Label.pdf","",2026-10-08
+17,"Mixed Seeds Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Sesame Seeds.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, chia seeds, flax seeds, sesame seeds, poppy seeds, pumpkin seeds.",Active,Yes,"Mixed_Seeds_Bread_Label.pdf","",2026-10-08
+19,"Peanut Butter Chocolate Muffins","Muffin",15.00,10.00,5.00,33.3,"25 oz (708 g)","Wheat, Milk, Eggs, Nuts, Soy.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, eggs, peanut butter (peanuts, sugar, palm oil, salt), butter (milk), brown sugar, chocolate chips (sugar, chocolate liquor, cocoa butter, milkfat, soy lecithin), cocoa powder, peanut oil, cornstarch, baking powder, baking soda, salt, vanilla extract.",Active,Yes,"Peanut_Butter_Chocolate_Muffins_Label.pdf","",2026-10-08
+20,"Plain Bagel","Bagel",15.00,10.00,5.00,33.3,"28 oz (800 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water.",Active,Yes,"Plain_Bagel_Label.pdf","",2026-10-08
+21,"Plain Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water.",Active,Yes,"Plain_Bread_Label.pdf","",2026-10-08
+29,"Plain English Muffin","Muffin",15.00,10.00,5.00,33.3,"18 oz (535 g)","Eggs, Honey, Milk, Wheat.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, milk, egg, honey, salt.",Active,Yes,"Plain_English_Muffin_Label.pdf","",2026-10-13
+22,"Pumpernickel Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk, Honey.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, honey, molasses, cocoa, coffee, caraway seeds.",Active,Yes,"Pumpernickel_Bread_Label.pdf","",2026-10-08
+23,"Rosemary Garlic Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk.","Enriched bleached wheat flour (wheat flour, barley flour), sourdough starter (water, flour), sugar, butter (milk), salt, filtered water, rosemary, garlic.",Active,Yes,"Rosemary_Garlic_Bread_Label.pdf","",2026-10-08
+25,"Whole Wheat Bread","Bread",15.00,10.00,5.00,33.3,"32 oz (907 g)","Wheat, Milk.","Whole wheat flour, sourdough starter (water, flour), sugar, butter (milk), salt, filtered water.",Active,Yes,"Whole_Wheat_Bread_Label.pdf","",2026-10-08
+32,"Whole Wheat English Muffins","Muffin",15.00,10.00,5.00,33.3,"32 oz (907 g)","Eggs, Honey, Milk, Wheat.","Enriched bleached wheat flour (wheat flour, barley flour), whole wheat flour, sourdough starter (water, flour), sugar, milk, egg, honey, salt.",Active,Yes,"Whole_Wheat_English_Muffins_Label.pdf","",2026-10-30`;
+
+      const CATEGORY_ORDER = [
+        'Bagels',
+        'Bread',
+        'English Muffins',
+        'Muffins',
+        'Other'
+      ];
+
+      function parseCSV(csvText) {
+        const text = csvText.replace(/^\uFEFF/, '');
+        const rows = [];
+        let row = [];
+        let field = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+          const ch = text[i];
+          const next = text[i + 1];
+
+          if (inQuotes) {
+            if (ch === '"' && next === '"') {
+              field += '"';
+              i++;
+            } else if (ch === '"') {
+              inQuotes = false;
+            } else {
+              field += ch;
+            }
+          } else {
+            if (ch === '"') {
+              inQuotes = true;
+            } else if (ch === ',') {
+              row.push(field.trim());
+              field = '';
+            } else if (ch === '\r' || ch === '\n') {
+              if (ch === '\r' && next === '\n') {
+                i++;
+              }
+              row.push(field.trim());
+              if (row.some(cell => cell !== '')) {
+                rows.push(row);
+              }
+              row = [];
+              field = '';
+            } else {
+              field += ch;
+            }
+          }
+        }
+
+        if (field.length > 0 || row.length > 0) {
+          row.push(field.trim());
+          if (row.some(cell => cell !== '')) {
+            rows.push(row);
+          }
+        }
+
+        if (rows.length === 0) return [];
+
+        const headers = rows[0].map(h => h.trim());
+        return rows.slice(1).map(values => {
+          const record = {};
+          headers.forEach((header, index) => {
+            record[header] = values[index] !== undefined ? values[index] : '';
+          });
+          return record;
+        });
+      }
+
+      function formatProductName(rawName, isEnglishMuffin) {
+        let cleaned = rawName;
+        if (isEnglishMuffin) {
+          cleaned = cleaned.replace(/\benglish\s+muffins?\b/gi, '');
+        }
+        cleaned = cleaned.replace(/\b(breads?|bagels?|muffins?)\b/gi, '');
+        cleaned = cleaned.replace(/\s+/g, ' ').trim();
+        if (/pancake\s+mix/i.test(cleaned)) {
+          cleaned += ' \u2014 $10';
+        }
+        return cleaned;
+      }
+
+      function mapCategory(rawCategory, rawName) {
+        if (/\benglish\s+muffins?\b/i.test(rawName) || /^english\s+muffins?$/i.test(rawCategory)) {
+          return 'English Muffins';
+        }
+        const cat = (rawCategory || '').trim().toLowerCase();
+        if (cat === 'bagel' || cat === 'bagels') return 'Bagels';
+        if (cat === 'bread' || cat === 'breads') return 'Bread';
+        if (cat === 'muffin' || cat === 'muffins') return 'Muffins';
+        return 'Other';
+      }
+
+      async function discoverCatalogFiles() {
+        const discovered = new Map();
+        const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+
+        if (isHttp) {
+          for (const name of DEFAULT_CATALOG_FILES) {
+            discovered.set(name, null);
+          }
+        }
+
+        const checkDir = (async () => {
+          if (!isHttp) return;
+          try {
+            const dirRes = await fetch('./', { cache: 'no-cache' });
+            if (dirRes.ok) {
+              const contentType = dirRes.headers.get('content-type') || '';
+              if (contentType.includes('text/html')) {
+                const html = await dirRes.text();
+                const matches = html.matchAll(/Product_Catalog[^"'\s<>/?#]*\.csv/gi);
+                for (const match of matches) {
+                  const fileName = decodeURIComponent(match[0]);
+                  if (!discovered.has(fileName)) {
+                    discovered.set(fileName, null);
+                  }
+                }
+              }
+            }
+          } catch (_) {
+            // Ignore directory listing errors
+          }
+        })();
+
+        const checkGitHub = (async () => {
+          try {
+            const ghRes = await fetch('https://api.github.com/repos/pcartwright81/CanvasandCrustBySvetlana/contents/', {
+              headers: { 'Accept': 'application/vnd.github.v3+json' }
+            });
+            if (ghRes.ok) {
+              const items = await ghRes.json();
+              if (Array.isArray(items)) {
+                for (const item of items) {
+                  if (item && item.type === 'file' && /^Product_Catalog.*\.csv$/i.test(item.name)) {
+                    discovered.set(item.name, item.download_url || null);
+                  }
+                }
+              }
+            }
+          } catch (_) {
+            // Ignore GitHub API errors
+          }
+        })();
+
+        await Promise.allSettled([checkDir, checkGitHub]);
+
+        // Sort descending so the newest timestamped Product_Catalog_*.csv comes first
+        return Array.from(discovered.entries())
+          .sort(([a], [b]) => b.localeCompare(a))
+          .map(([name, downloadUrl]) => ({ name, downloadUrl }));
+      }
+
+      async function loadLatestCatalogCSV() {
+        const isHttp = window.location.protocol === 'http:' || window.location.protocol === 'https:';
+        const candidates = await discoverCatalogFiles();
+        for (const { name, downloadUrl } of candidates) {
+          const urls = [];
+          if (isHttp) urls.push(name);
+          if (downloadUrl) urls.push(downloadUrl);
+
+          for (const url of urls) {
+            try {
+              const res = await fetch(url, { cache: 'no-cache' });
+              if (res.ok) {
+                const text = await res.text();
+                if (text && /\bName\b/i.test(text.split(/\r?\n/)[0])) {
+                  return text;
+                }
+              }
+            } catch (_) {
+              // Try next URL or candidate
+            }
+          }
+        }
+        return null;
+      }
+
+      let lastFocusedElement = null;
+
+      function openProductModal(product) {
+        const backdrop = document.getElementById('product-modal-backdrop');
+        const titleEl = document.getElementById('product-modal-title');
+        const ingredientsEl = document.getElementById('product-modal-ingredients');
+        const containsEl = document.getElementById('product-modal-contains');
+        const closeBtn = document.getElementById('product-modal-close');
+
+        if (!backdrop || !titleEl || !ingredientsEl || !containsEl) return;
+
+        lastFocusedElement = document.activeElement;
+        titleEl.textContent = product.rawName || product.displayName;
+        ingredientsEl.textContent = product.ingredients || 'Ingredients not listed.';
+        containsEl.textContent = product.allergens || 'None listed.';
+
+        backdrop.classList.add('is-open');
+        backdrop.setAttribute('aria-hidden', 'false');
+        if (closeBtn) closeBtn.focus();
+      }
+
+      function closeProductModal() {
+        const backdrop = document.getElementById('product-modal-backdrop');
+        if (!backdrop || !backdrop.classList.contains('is-open')) return;
+
+        backdrop.classList.remove('is-open');
+        backdrop.setAttribute('aria-hidden', 'true');
+        if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+          lastFocusedElement.focus();
+        }
+      }
+
+      function setupModalEvents() {
+        const backdrop = document.getElementById('product-modal-backdrop');
+        const closeBtn = document.getElementById('product-modal-close');
+
+        if (closeBtn) {
+          closeBtn.addEventListener('click', closeProductModal);
+        }
+        if (backdrop) {
+          backdrop.addEventListener('click', function (e) {
+            if (e.target === backdrop) {
+              closeProductModal();
+            }
+          });
+        }
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            closeProductModal();
+          }
+        });
+      }
+
+      function renderProducts(records) {
+        const container = document.getElementById('products-container');
+        if (!container) return;
+
+        const grouped = {};
+        CATEGORY_ORDER.forEach(cat => {
+          grouped[cat] = [];
+        });
+
+        for (const item of records) {
+          const status = (item.Status || '').trim().toLowerCase();
+          if (status && status !== 'active') continue;
+
+          const rawName = (item.Name || '').trim();
+          if (!rawName) continue;
+
+          const category = mapCategory(item.Category, rawName);
+          const isEnglishMuffin = category === 'English Muffins';
+          const displayName = formatProductName(rawName, isEnglishMuffin);
+          if (!displayName) continue;
+
+          if (!grouped[category]) {
+            grouped[category] = [];
+          }
+          if (!grouped[category].some(p => p.displayName === displayName)) {
+            grouped[category].push({
+              rawName,
+              displayName,
+              ingredients: (item.Ingredients || '').trim(),
+              allergens: (item.Allergens || '').trim()
+            });
+          }
+        }
+
+        container.innerHTML = '';
+
+        for (const category of CATEGORY_ORDER) {
+          const items = grouped[category];
+          if (!items || items.length === 0) continue;
+
+          items.sort((a, b) => a.displayName.localeCompare(b.displayName));
+
+          const heading = document.createElement('h3');
+          heading.className = 'product-category-title';
+          heading.textContent = category;
+          container.appendChild(heading);
+
+          const grid = document.createElement('div');
+          grid.className = 'specialties-grid';
+
+          for (const product of items) {
+            const tag = document.createElement('button');
+            tag.type = 'button';
+            tag.className = 'specialty-tag product-tag';
+            tag.textContent = product.displayName;
+            tag.addEventListener('click', function () {
+              openProductModal(product);
+            });
+            grid.appendChild(tag);
+          }
+
+          container.appendChild(grid);
+        }
+      }
+
+      async function initProducts() {
+        setupModalEvents();
+
+        // Render embedded CSV catalog immediately (supports opening index.html directly via file://)
+        renderProducts(parseCSV(FALLBACK_CSV));
+
+        // When served over HTTP/HTTPS (or if a newer catalog is on GitHub), fetch and re-render
+        const csvText = await loadLatestCatalogCSV();
+        if (csvText) {
+          const records = parseCSV(csvText);
+          renderProducts(records);
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initProducts);
+      } else {
+        initProducts();
+      }
+    })();
+  </script>
 </body>
 
 </html>
